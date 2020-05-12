@@ -13,7 +13,7 @@ class SearchBook extends React.Component {
   
   updateQuery = (query) => {
     this.setState(() => ({
-      query: query.trim(),
+      query: query,
       search_results: []
     }))
     if (query !== '') {
@@ -22,7 +22,7 @@ class SearchBook extends React.Component {
       .then((books) => {
         if (!("error" in books)) {
           this.setState(() => ({
-                  query: query.trim(),
+                  query: query,
                   search_results: books
                 }))
         }
@@ -61,9 +61,9 @@ class SearchBook extends React.Component {
         </div>
         <div className="search-books-results">
           <ol className="books-grid">
-            {search_results.map((book, index) =>
+            {search_results.map((book) =>
               <Book 
-                key={`book-id-${index}`} 
+                key={`${book.id}`} 
                 book={book} 
                 onChangeShelf={onChangeShelf} 
               />
