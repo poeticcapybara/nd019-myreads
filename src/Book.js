@@ -5,7 +5,6 @@ class Book extends React.Component {
   handleChangeShelf = (e) => {
     if (this.props.onChangeShelf)
     {
-      console.log('onChangeShelf')
       this.props.onChangeShelf(this.props.book, e.target.value)
     }
   }

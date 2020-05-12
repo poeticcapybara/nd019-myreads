@@ -45,10 +45,8 @@ class BooksApp extends React.Component {
 
   updateShelf = (book, newShelf) => {
     if (!this.bookInShelf(book)){
-      console.log('Adding book! :)', book)
       this.addBook({...book, shelf:newShelf})
     } else if (newShelf==='none'){
-      console.log('Removing book! :(', book)
       this.removeBook(book)
     } else {
       this.setState(state => {
