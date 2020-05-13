@@ -1,8 +1,8 @@
 import React from 'react'
 import './App.css'
-import BookList from './BookList'
-import { Route, Link } from 'react-router-dom'
+import { Route} from 'react-router-dom'
 import SearchBook from './SearchBook'
+import BookLibrary from './BookLibrary'
 import * as BooksAPI from './BooksAPI'
 
 class BooksApp extends React.Component {
@@ -19,20 +19,6 @@ class BooksApp extends React.Component {
       })
   }
 
-  removeBook = (book) => {
-    this.setState((prevState) => ({
-      books: prevState.books.filter((b) => {
-        return b.id !== book.id
-      })
-    }))
-  }
-
-  addBook = (book) => {
-    this.setState((prevState) => ({
-      books: prevState.books.concat([book])
-    }))
-  }
-
   bookInShelf = (book) => {
     const books = this.state.books;
     for (let b of books) {
@@ -44,28 +30,17 @@ class BooksApp extends React.Component {
   };
 
   updateShelf = (book, newShelf) => {
-    if (!this.bookInShelf(book)){
-      this.addBook({...book, shelf:newShelf})
-    } else if (newShelf==='none'){
-      this.removeBook(book)
-    } else {
-      this.setState(state => {
-        const books = state.books.map((b) => {
-          if (b.id === book.id) {
-            return {...b, shelf:newShelf}
-          } else {
-            return b
-          }
-        })
-        return {
-          books
-        }
-      })
-
-      BooksAPI.update(book, newShelf)
-    }
+    BooksAPI.update(book, newShelf)
+    .then(response => {
+      // update or add shelf information
+      book.shelf = newShelf;
+      this.setState(prevState => ({
+        books: prevState.books
+        .filter(b => b.id !== book.id)
+        .concat(book)
+      }))
+    })
   };
-  
 
   render() {
     return (
@@ -77,38 +52,10 @@ class BooksApp extends React.Component {
           />)}
         />
         <Route exact path='/' render={() => (
-          <div className="list-books">
-            <div className="list-books-title">
-              <h1>MyReads</h1>
-            </div>
-            <div className="list-books-content">
-              <div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Currently Reading</h2>
-                  <BookList 
-                    books={this.state.books.filter((book) => book.shelf === 'currentlyReading')} 
-                    onChangeShelf={this.updateShelf} 
-                  />
-                </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Want to Read</h2>
-                  <BookList 
-                    books={this.state.books.filter((book) => book.shelf === 'wantToRead')} 
-                    onChangeShelf={this.updateShelf} 
-                  />
-                </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Read</h2>
-                  <BookList 
-                    books={this.state.books.filter((book) => book.shelf === 'read')} 
-                    onChangeShelf={this.updateShelf} 
-                  />
-                </div>
-              </div>
-            </div>
-            <Link to="/search" className="open-search"><button >Add a book</button></Link>
-          </div>
-        )}
+          <BookLibrary 
+            books = {this.state.books}
+            updateShelf = {this.updateShelf}
+          />)}
         />
       </div>
     )
