@@ -12,7 +12,8 @@ and a search function to add new books to the shelves. The available queries can
 _Note_: This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app). You can find more information on how to perform common tasks [here](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md).
 
 ## Installation
-To get started developing right away:
+
+To install the necessary dependencies using npm:
 
 ````bash
 npm install
@@ -20,6 +21,12 @@ npm install
 
 ## Usage
 
+To run the app in development mode:
 ````bash
 npm start
 ````
+By default it will use port 3000, so you'll be able to find the app in [localhost:3000](http://localhost:3000/).
+
+## License
+
+See [LICENSE.md](LICENSE.md).
