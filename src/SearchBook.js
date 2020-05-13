@@ -9,8 +9,15 @@ class SearchBook extends React.Component {
     query: '',
     search_results: [],
   }
-
   
+  filterShelfBooks = (books) => {
+    const shelf_ids = this.props.shelfBooks.map((b) => b.id)
+    const search_ids = books.map((b) => b.id)
+    const searchInShelfIds = shelf_ids.filter((id) => search_ids.includes(id))
+    return [...books.filter((b) => {return !shelf_ids.includes(b.id)}),
+        ...this.props.shelfBooks.filter((b) => searchInShelfIds.includes(b.id))]
+  }
+
   updateQuery = (query) => {
     this.setState(() => ({
       query: query,
@@ -20,23 +27,14 @@ class SearchBook extends React.Component {
       BooksAPI
       .search(query.toLowerCase())
       .then((books) => {
+        // update state if no error entry in the response
         if (!("error" in books)) {
           this.setState(() => ({
                   query: query,
-                  search_results: books
+                  search_results: this.filterShelfBooks(books)
                 }))
         }
-        }
-      ).then(() => {
-        const shelf_ids = this.props.shelfBooks.map((b) => b.id)
-        const search_ids = this.state.search_results.map((b) => b.id)
-        const searchInShelfIds = shelf_ids.filter((id) => search_ids.includes(id))
-        this.setState((prevState) => ({
-          search_results: [...prevState.search_results.filter((b) => {return !shelf_ids.includes(b.id)}),
-            ...this.props.shelfBooks.filter((b) => searchInShelfIds.includes(b.id))]
-        }))
       })
-      
     }
   }
 
